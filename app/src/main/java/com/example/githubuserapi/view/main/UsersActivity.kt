@@ -25,8 +25,6 @@ import com.example.githubuserapi.view.favorite.FavoriteActivity
 import com.example.githubuserapi.view.setting.SettingsActivity
 import com.example.githubuserapi.view.setting.SettingsViewModel
 
-private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "settings")
-
 class UsersActivity : AppCompatActivity() {
     private lateinit var usersViewModel: UsersViewModel
     private val list = ArrayList<User>()
@@ -43,24 +41,8 @@ class UsersActivity : AppCompatActivity() {
             this@UsersActivity,
             ViewModelProvider.NewInstanceFactory()
         )[UsersViewModel::class.java]
-
-        setTheme()
     }
 
-    private fun setTheme() {
-        val pref = SettingPreferences.getInstance(dataStore)
-        val settingViewModel =
-            ViewModelProvider(this, ViewModelFactory(pref))[SettingsViewModel::class.java]
-
-        settingViewModel.getThemeSettings().observe(this,
-            { isDarkModeActive: Boolean ->
-                if (isDarkModeActive) {
-                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-                } else {
-                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-                }
-            })
-    }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         val inflater = menuInflater
@@ -134,4 +116,11 @@ class UsersActivity : AppCompatActivity() {
         _binding = null
     }
 
+    override fun onBackPressed() {
+        super.onBackPressed()
+        val intent = Intent(Intent.ACTION_MAIN)
+        intent.addCategory(Intent.CATEGORY_HOME)
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+        startActivity(intent)
+    }
 }
